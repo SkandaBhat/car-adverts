@@ -1,6 +1,7 @@
 package v1.advert
 
 import javax.inject.Inject
+
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
 import play.api.routing.sird._
@@ -18,14 +19,11 @@ class AdvertRouter @Inject()(controller: AdvertController) extends SimpleRouter 
   }
 
   override def routes: Routes = {
-
-    // get all adverts
     case GET(p"/") =>
       controller.index
 
-    // create an advert
     case POST(p"/") =>
-      controller.create
+      controller.process
 
     case GET(p"/$id") =>
       controller.show(id)

@@ -1,6 +1,8 @@
 package v1.advert
 
 import javax.inject.Inject
+
+import play.api.Logger
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -12,10 +14,10 @@ case class AdvertFormInput(title: String, body: String)
 /**
   * Takes HTTP requests and produces JSON.
   */
-class AdvertController @Inject()(
-    action: AdvertAction,
-    handler: AdvertResourceHandler)(implicit ec: ExecutionContext)
-    extends Controller {
+class AdvertController @Inject()(cc: AdvertControllerComponents)(implicit ec: ExecutionContext)
+    extends AdvertBaseController(cc) {
+
+  private val logger = Logger(getClass)
 
   private val form: Form[AdvertFormInput] = {
     import play.api.data.Forms._
@@ -28,36 +30,32 @@ class AdvertController @Inject()(
     )
   }
 
-  def index: Action[AnyContent] = {
-    action.async { implicit request =>
-      handler.find.map { adverts =>
-        Ok(Json.toJson(adverts))
-      }
+  def index: Action[AnyContent] = AdvertAction.async { implicit request =>
+    logger.trace("index: ")
+    advertResourceHandler.find.map { adverts =>
+      Ok(Json.toJson(adverts))
     }
   }
 
-  def create: Action[AnyContent] = {
-    action.async { implicit request =>
-      processJsonAdvert()
+  def process: Action[AnyContent] = AdvertAction.async { implicit request =>
+    logger.trace("process: ")
+    processJsonAdvert()
+  }
+
+  def show(id: String): Action[AnyContent] = AdvertAction.async { implicit request =>
+    logger.trace(s"show: id = $id")
+    advertResourceHandler.lookup(id).map { advert =>
+      Ok(Json.toJson(advert))
     }
   }
 
-  def show(id: String): Action[AnyContent] = {
-    action.async { implicit request =>
-      handler.lookup(id).map { advert =>
-        Ok(Json.toJson(advert))
-      }
-    }
-  }
-
-  private def processJsonAdvert[A]()(
-      implicit request: AdvertRequest[A]): Future[Result] = {
+  private def processJsonAdvert[A]()(implicit request: AdvertRequest[A]): Future[Result] = {
     def failure(badForm: Form[AdvertFormInput]) = {
       Future.successful(BadRequest(badForm.errorsAsJson))
     }
 
     def success(input: AdvertFormInput) = {
-      handler.create(input).map { advert =>
+      advertResourceHandler.create(input).map { advert =>
         Created(Json.toJson(advert)).withHeaders(LOCATION -> advert.link)
       }
     }

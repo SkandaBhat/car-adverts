@@ -1,9 +1,11 @@
 package v1.advert
 
 import javax.inject.{Inject, Provider}
-import play.api.libs.json._
+
+import play.api.MarkerContext
 
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.libs.json._
 
 /**
   * DTO for displaying advert information.
@@ -31,10 +33,10 @@ object AdvertResource {
   * Controls access to the backend data, returning [[AdvertResource]]
   */
 class AdvertResourceHandler @Inject()(
-                                     routerProvider: Provider[AdvertRouter],
-                                     advertRepository: AdvertRepository)(implicit ec: ExecutionContext) {
+                                       routerProvider: Provider[AdvertRouter],
+                                       advertRepository: AdvertRepository)(implicit ec: ExecutionContext) {
 
-  def create(advertInput: AdvertFormInput): Future[AdvertResource] = {
+  def create(advertInput: AdvertFormInput)(implicit mc: MarkerContext): Future[AdvertResource] = {
     val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.body)
     // We don't actually create the advert, so return what we have
     advertRepository.create(data).map { id =>
@@ -42,7 +44,7 @@ class AdvertResourceHandler @Inject()(
     }
   }
 
-  def lookup(id: String): Future[Option[AdvertResource]] = {
+  def lookup(id: String)(implicit mc: MarkerContext): Future[Option[AdvertResource]] = {
     val advertFuture = advertRepository.get(AdvertId(id))
     advertFuture.map { maybeAdvertData =>
       maybeAdvertData.map { advertData =>
@@ -51,7 +53,7 @@ class AdvertResourceHandler @Inject()(
     }
   }
 
-  def find: Future[Iterable[AdvertResource]] = {
+  def find(implicit mc: MarkerContext): Future[Iterable[AdvertResource]] = {
     advertRepository.list().map { advertDataList =>
       advertDataList.map(advertData => createAdvertResource(advertData))
     }
