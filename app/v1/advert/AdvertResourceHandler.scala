@@ -10,7 +10,7 @@ import play.api.libs.json._
 /**
   * DTO for displaying advert information.
   */
-case class AdvertResource(id: String, link: String, title: String, body: String)
+case class AdvertResource(id: String, title: String, fuel: String, price: String, isnew: Boolean, mileage: String, first_registration: String)
 
 object AdvertResource {
 
@@ -21,9 +21,12 @@ object AdvertResource {
     def writes(advert: AdvertResource): JsValue = {
       Json.obj(
         "id" -> advert.id,
-        "link" -> advert.link,
         "title" -> advert.title,
-        "body" -> advert.body
+        "fuel" -> advert.fuel,
+        "price" -> advert.price,
+        "new" -> advert.isnew,
+        "mileage" -> advert.mileage,
+        "first_registration" -> advert.first_registration
       )
     }
   }
@@ -37,7 +40,7 @@ class AdvertResourceHandler @Inject()(
                                        advertRepository: AdvertRepository)(implicit ec: ExecutionContext) {
 
   def create(advertInput: AdvertFormInput)(implicit mc: MarkerContext): Future[AdvertResource] = {
-    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.body)
+    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.fuel, advertInput.price, advertInput.isnew, advertInput.mileage, advertInput.first_registration)
     // We don't actually create the advert, so return what we have
     advertRepository.create(data).map { id =>
       createAdvertResource(data)
@@ -45,7 +48,7 @@ class AdvertResourceHandler @Inject()(
   }
 
   def update(advertInput: AdvertFormInput)(implicit mc: MarkerContext): Future[AdvertResource] = {
-    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.body)
+    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.fuel, advertInput.price, advertInput.isnew, advertInput.mileage, advertInput.first_registration)
     // We don't actually create the advert, so return what we have
     advertRepository.create(data).map { id =>
       createAdvertResource(data)
@@ -53,7 +56,7 @@ class AdvertResourceHandler @Inject()(
   }
 
   def delete(advertInput: AdvertFormInput)(implicit mc: MarkerContext): Future[AdvertResource] = {
-    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.body)
+    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.fuel, advertInput.price, advertInput.isnew, advertInput.mileage, advertInput.first_registration)
     // We don't actually create the advert, so return what we have
     advertRepository.create(data).map { id =>
       createAdvertResource(data)
@@ -76,7 +79,7 @@ class AdvertResourceHandler @Inject()(
   }
 
   private def createAdvertResource(p: AdvertData): AdvertResource = {
-    AdvertResource(p.id.toString, routerProvider.get.link(p.id), p.title, p.body)
+    AdvertResource(p.id.toString, p.title, p.fuel, p.price, p.isnew, p.mileage, p.first_registration)
   }
 
 }

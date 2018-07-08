@@ -9,7 +9,7 @@ import play.api.mvc._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class AdvertFormInput(title: String, body: String)
+case class AdvertFormInput(title: String, fuel: String, price: String, isnew: Boolean, mileage: String, first_registration: String)
 
 /**
   * Takes HTTP requests and produces JSON.
@@ -25,7 +25,11 @@ class AdvertController @Inject()(cc: AdvertControllerComponents)(implicit ec: Ex
     Form(
       mapping(
         "title" -> nonEmptyText,
-        "body" -> text
+        "fuel" -> text,
+        "price" -> text,
+        "isnew" -> boolean,
+        "mileage" -> text,
+        "first_registration" -> text
       )(AdvertFormInput.apply)(AdvertFormInput.unapply)
     )
   }
@@ -67,7 +71,7 @@ class AdvertController @Inject()(cc: AdvertControllerComponents)(implicit ec: Ex
 
     def success(input: AdvertFormInput) = {
       advertResourceHandler.create(input).map { advert =>
-        Created(Json.toJson(advert)).withHeaders(LOCATION -> advert.link)
+        Created(Json.toJson(advert))
       }
     }
 

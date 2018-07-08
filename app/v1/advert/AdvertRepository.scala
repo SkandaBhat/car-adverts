@@ -8,7 +8,7 @@ import play.api.{Logger, MarkerContext}
 
 import scala.concurrent.Future
 
-final case class AdvertData(id: AdvertId, title: String, body: String)
+final case class AdvertData(id: AdvertId, title: String, fuel: String, price: String, isnew: Boolean, mileage: String, first_registration: String)
 
 class AdvertId private(val underlying: Int) extends AnyVal {
   override def toString: String = underlying.toString
@@ -48,11 +48,11 @@ class AdvertRepositoryImpl @Inject()()(implicit ec: AdvertExecutionContext) exte
   private val logger = Logger(this.getClass)
 
   private val advertList = List(
-    AdvertData(AdvertId("1"), "title 1", "blog advert 1"),
-    AdvertData(AdvertId("2"), "title 2", "blog advert 2"),
-    AdvertData(AdvertId("3"), "title 3", "blog advert 3"),
-    AdvertData(AdvertId("4"), "title 4", "blog advert 4"),
-    AdvertData(AdvertId("5"), "title 5", "blog advert 5")
+    AdvertData(AdvertId("1"), "Audi A4 Avant", "Diesel", "5000", true, "10", "11031996"),
+    AdvertData(AdvertId("2"), "Audi A4 Avant", "Diesel", "5000", true, "10", "11031996"),
+    AdvertData(AdvertId("3"), "Audi A4 Avant", "Diesel", "5000", true, "10", "11031996"),
+    AdvertData(AdvertId("4"), "Audi A4 Avant", "Diesel", "5000", true, "10", "11031996"),
+    AdvertData(AdvertId("5"), "Audi A4 Avant", "Diesel", "5000", true, "10", "11031996")
   )
 
   override def list()(implicit mc: MarkerContext): Future[Iterable[AdvertData]] = {

@@ -12,12 +12,6 @@ import play.api.routing.sird._
 class AdvertRouter @Inject()(controller: AdvertController) extends SimpleRouter {
   val prefix = "/v1/adverts"
 
-  def link(id: AdvertId): String = {
-    import com.netaporter.uri.dsl._
-    val url = prefix / id.toString
-    url.toString()
-  }
-
   override def routes: Routes = {
     case GET(p"/") =>
       controller.getAdverts
