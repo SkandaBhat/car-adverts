@@ -30,24 +30,35 @@ class AdvertController @Inject()(cc: AdvertControllerComponents)(implicit ec: Ex
     )
   }
 
-  def index: Action[AnyContent] = AdvertAction.async { implicit request =>
+  def getAdverts: Action[AnyContent] = AdvertAction.async { implicit request =>
     logger.trace("index: ")
     advertResourceHandler.find.map { adverts =>
       Ok(Json.toJson(adverts))
     }
   }
 
-  def process: Action[AnyContent] = AdvertAction.async { implicit request =>
-    logger.trace("process: ")
-    processJsonAdvert()
-  }
-
-  def show(id: String): Action[AnyContent] = AdvertAction.async { implicit request =>
+  def getAdvert(id: String): Action[AnyContent] = AdvertAction.async { implicit request =>
     logger.trace(s"show: id = $id")
     advertResourceHandler.lookup(id).map { advert =>
       Ok(Json.toJson(advert))
     }
   }
+
+  def create: Action[AnyContent] = AdvertAction.async { implicit request =>
+    logger.trace("process: ")
+    processJsonAdvert()
+  }
+
+  def update: Action[AnyContent] = AdvertAction.async { implicit request =>
+    logger.trace("process: ")
+    processJsonAdvert()
+  }
+
+  def delete: Action[AnyContent] = AdvertAction.async { implicit request =>
+    logger.trace("process: ")
+    processJsonAdvert()
+  }
+
 
   private def processJsonAdvert[A]()(implicit request: AdvertRequest[A]): Future[Result] = {
     def failure(badForm: Form[AdvertFormInput]) = {

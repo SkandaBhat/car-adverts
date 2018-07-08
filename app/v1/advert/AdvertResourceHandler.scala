@@ -44,6 +44,22 @@ class AdvertResourceHandler @Inject()(
     }
   }
 
+  def update(advertInput: AdvertFormInput)(implicit mc: MarkerContext): Future[AdvertResource] = {
+    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.body)
+    // We don't actually create the advert, so return what we have
+    advertRepository.create(data).map { id =>
+      createAdvertResource(data)
+    }
+  }
+
+  def delete(advertInput: AdvertFormInput)(implicit mc: MarkerContext): Future[AdvertResource] = {
+    val data = AdvertData(AdvertId("999"), advertInput.title, advertInput.body)
+    // We don't actually create the advert, so return what we have
+    advertRepository.create(data).map { id =>
+      createAdvertResource(data)
+    }
+  }
+
   def lookup(id: String)(implicit mc: MarkerContext): Future[Option[AdvertResource]] = {
     val advertFuture = advertRepository.get(AdvertId(id))
     advertFuture.map { maybeAdvertData =>

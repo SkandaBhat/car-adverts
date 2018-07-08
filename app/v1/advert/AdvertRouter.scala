@@ -20,13 +20,19 @@ class AdvertRouter @Inject()(controller: AdvertController) extends SimpleRouter 
 
   override def routes: Routes = {
     case GET(p"/") =>
-      controller.index
+      controller.getAdverts
 
     case POST(p"/") =>
-      controller.process
+      controller.create
+
+    case PUT(p"/") =>
+      controller.update
+
+    case DELETE(p"/") =>
+      controller.delete
 
     case GET(p"/$id") =>
-      controller.show(id)
+      controller.getAdvert(id)
   }
 
 }
