@@ -1,0 +1,19 @@
+version: '3'
+services:
+  sbt:
+    build: ./sbt
+    image: sbt
+    ports:
+    - "9000:9000"
+    volumes:
+    - ../:/root
+    links:
+    - dynamodb
+    depends_on:
+    - "dynamodb"
+    stdin_open: true
+  dynamodb:
+    build: ./dynamodb
+    image: dynamodb
+    ports:
+      - 8000:8000
