@@ -4,6 +4,17 @@ PLEASE NOTE THAT THIS PROJECT IS NOT COMPLETE, AND IS UNUSABLE.
 
 This is an application on play which helps you create, modify and delete car advertisements.
 
+
+#### What works? 
+
+- Dockerisation; DynamoDB and the play application both run on containers locally
+
+- Basic project setup, and data modelling. There is some dummy data which is returned on doing a GET call to /v1/adverts.
+
+#### What doesnt work?
+
+- Everything else
+
 ### Setup
 
 This application runs on docker.
